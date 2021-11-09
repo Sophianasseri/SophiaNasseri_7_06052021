@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Fontawesome-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!--Polices-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/main.css" />
+    <title>Les petits plats</title>
+  </head>
+  <body>
+    <div class="page-container">
+      <header>
+        <img src="./logo/logo.svg" alt="" />
+        <h1>Les petits plats</h1>
+      </header>
+      <main>
+        <div class="searchbar-container">
+          <input
+            type="text"
+            placeholder="Rechercher un ingrédient, appareil, ustensiles ou une recette"
+          />
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="filter">
+          <div class="dropdown">
+            <button id="toggle-ingredient" class="dropdown__toggle dropdown__toggle--ingredient">
+              Ingrédients
+            </button>
+            <div class="toggle-list">
+              <div id="search-ingredient">
+                <input
+                type="text"
+                placeholder="Rechercher un ingrédient"
+              />
+              <i class="fas fa-chevron-up"></i>
+              </div>
+            </div>
+              <ul id="menu-ingredient">
+              </ul>
+          </div>
+          <div class="dropdown">
+            <button id="toggle-appliance" class="dropdown__toggle dropdown__toggle--appliance">
+             Appareil
+            </button>
+            <div class="toggle-list">
+              <div id="search-appliance">
+                <input
+                type="text"
+                placeholder="Rechercher un appareil"
+              />
+              <i class="fas fa-chevron-up"></i>
+              </div>
+            </div>
+              <ul id="menu-appliance">
+              </ul>
+          </div>
+          <div class="dropdown">
+            <button id="toggle-utensil" class="dropdown__toggle dropdown__toggle--utensil">
+             Ustensiles
+            </button>
+            <div class="toggle-list">
+              <div id="search-utensil">
+                <input
+                type="text"
+                placeholder="Rechercher un unstensile"
+              />
+              <i class="fas fa-chevron-up"></i>
+              </div>
+            </div>
+              <ul id="menu-utensil">
+              </ul>
+          </div>
+       
+        </div>
+        <div class="recipes"></div>
+      </main>
+    </div>
+
+    <script type="module" src="./js/index.js"></script>
+  </body>
+</html>
