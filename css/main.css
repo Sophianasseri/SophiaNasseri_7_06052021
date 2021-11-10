@@ -75,39 +75,61 @@ header h1 {
   background: #ed6454;
 }
 
-#menu-ingredient {
-  background: #3282F7;
-  color: #fff;
+.toggle-list {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+}
+.toggle-list--ingredient {
+  width: 630px;
 }
 
-#search-ingredient {
+.search {
   display: flex;
   justify-content: space-between;
-  background: #3282F7;
   color: #fff;
-  border-radius: 5px;
-  width: 500px;
+  border-radius: 5px 5px 0 0;
+  padding: 1.5rem 1rem 1rem 1rem;
 }
-#search-ingredient input {
+.search input {
   outline: none;
   width: 100%;
   border: none;
+}
+.search input::-moz-placeholder {
+  color: #fff;
+  opacity: 0.5;
+  font-weight: 700;
+}
+.search input:-ms-input-placeholder {
+  color: #fff;
+  opacity: 0.5;
+  font-weight: 700;
+}
+.search input::placeholder {
+  color: #fff;
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+.menu {
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px 35px;
+  padding: 1rem;
+  border-radius: 0 0 5px 5px;
+}
+
+#menu-ingredient {
   background: #3282F7;
 }
-#search-ingredient input::-moz-placeholder {
-  color: #fff;
-  opacity: 0.5;
-  font-weight: 700;
+
+#search-ingredient {
+  background: #3282F7;
 }
-#search-ingredient input:-ms-input-placeholder {
-  color: #fff;
-  opacity: 0.5;
-  font-weight: 700;
-}
-#search-ingredient input::placeholder {
-  color: #fff;
-  opacity: 0.5;
-  font-weight: 700;
+#search-ingredient input {
+  background: #3282F7;
 }
 
 .searchbar-container {

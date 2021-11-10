@@ -1,6 +1,6 @@
-// eslint-disable-next-line import/extensions
+/* eslint-disable import/extensions */
 import recipes from './recipes.js';
-
+import { normalizeTag } from './functions.js';
 // Eléments DOM
 const recipesContainer = document.querySelector('.recipes');
 const ingredientListContainer = document.querySelector('#menu-ingredient');
@@ -8,6 +8,8 @@ const applianceListContainer = document.querySelector('#menu-appliance');
 const utensilListContainer = document.querySelector('#menu-utensil');
 
 const ingredientList = [];
+const applianceList = [];
+const utensilList = [];
 
 const displayIngQuantity = (elt) => {
   const { ingredient, quantity, unit } = elt;
@@ -44,19 +46,56 @@ const recipesDisplay = () => {
 
 recipesDisplay();
 
-const lowerCase = (string) => string.toLowerCase();
 
 recipes.forEach((recipe) => {
   recipe.ingredients.forEach((elt) => {
-    const ingredient = lowerCase(elt.ingredient);
+    const ingredient = normalizeTag(elt.ingredient);
     if (!ingredientList.includes(ingredient)) {
       ingredientList.push(`<li>${ingredient}</li>`);
       ingredientList.sort();
     }
   });
+  const appliance = normalizeTag(recipe.appliance);
+  if (!applianceList.includes(appliance)) {
+    applianceList.push(`<li>${appliance}</li>`);
+    applianceList.sort();
+  }
+  recipe.ustensils.forEach((elt) => {
+    const utensil = normalizeTag(elt);
+    if (!utensilList.includes(utensil)) {
+      utensilList.push(`<li>${utensil}</li>`);
+      utensilList.sort();
+    }
+
+  });
 });
 const uniqueIngredientList = [...new Set(ingredientList)];
 ingredientListContainer.innerHTML = `
-<ul>
+
 ${uniqueIngredientList.join('')}
+`;
+
+const uniqueApplianceList = [...new Set(applianceList)];
+applianceListContainer.innerHTML = `<ul>
+${uniqueApplianceList.join('')}
 </ul>`;
+
+const uniqueUtensilList = [...new Set(utensilList)];
+utensilListContainer.innerHTML = `<ul>
+${uniqueUtensilList.join('')}
+</ul>`;
+
+/*
+const filterIngredientsList = recipes => {
+  const ingredientList = []; 
+  recipes.forEach((recipe) => {
+    recipe.ingredients.forEach((elt) => {
+      const ingredient = normalizeTag(elt.ingredient);
+      if (!ingredientList.includes(ingredient)) {
+        ingredientList.push(ingredient);
+        ingredientList.sort();
+      }
+    });
+  });
+  return ingredientList
+} */
