@@ -82,6 +82,10 @@ header h1 {
 }
 .toggle-list--ingredient {
   width: 630px;
+  display: none;
+}
+.toggle-list--appliance {
+  width: 250px;
 }
 
 .search {
@@ -114,15 +118,19 @@ header h1 {
 
 .menu {
   color: #fff;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 5px 35px;
   padding: 1rem;
   border-radius: 0 0 5px 5px;
 }
 
 #menu-ingredient {
   background: #3282F7;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px 35px;
+}
+
+#menu-appliance {
+  background: #68D9a4;
 }
 
 #search-ingredient {
@@ -130,6 +138,13 @@ header h1 {
 }
 #search-ingredient input {
   background: #3282F7;
+}
+
+#search-appliance {
+  background: #68D9a4;
+}
+#search-appliance input {
+  background: #68D9a4;
 }
 
 .searchbar-container {
