@@ -86,6 +86,11 @@ header h1 {
 }
 .toggle-list--appliance {
   width: 250px;
+  display: none;
+}
+.toggle-list--utensil {
+  width: 250px;
+  display: none;
 }
 
 .search {
@@ -133,6 +138,10 @@ header h1 {
   background: #68D9a4;
 }
 
+#menu-utensil {
+  background: #ed6454;
+}
+
 #search-ingredient {
   background: #3282F7;
 }
@@ -145,6 +154,13 @@ header h1 {
 }
 #search-appliance input {
   background: #68D9a4;
+}
+
+#search-utensil {
+  background: #ed6454;
+}
+#search-utensil input {
+  background: #ed6454;
 }
 
 .searchbar-container {
