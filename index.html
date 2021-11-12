@@ -36,18 +36,25 @@
           />
           <button><i class="fas fa-search"></i></button>
         </div>
+        <div class="filter-results"></div>
         <div class="filter">
           <div class="dropdown">
             <button
               id="toggle-ingredient"
               class="dropdown__toggle dropdown__toggle--ingredient"
+              data-type="ingredient"
             >
               Ingrédients
             </button>
-            <div class="toggle-list toggle-list--ingredient">
+            <div
+              class="toggle-list toggle-list--ingredient"
+              data-type="ingredient"
+            >
               <div id="search-ingredient" class="search">
                 <input type="text" placeholder="Rechercher un ingrédient" />
-                <i class="fas fa-chevron-up"></i>
+                <button class="close-dropdown">
+                  <i class="fas fa-chevron-up"></i>
+                </button>
               </div>
               <ul id="menu-ingredient" class="menu"></ul>
             </div>
@@ -56,13 +63,19 @@
             <button
               id="toggle-appliance"
               class="dropdown__toggle dropdown__toggle--appliance"
+              data-type="appliance"
             >
               Appareil
             </button>
-            <div class="toggle-list toggle-list--appliance">
+            <div
+              class="toggle-list toggle-list--appliance"
+              data-type="appliance"
+            >
               <div id="search-appliance" class="search">
                 <input type="text" placeholder="Rechercher un appareil" />
-                <i class="fas fa-chevron-up"></i>
+                <button class="close-dropdown">
+                  <i class="fas fa-chevron-up"></i>
+                </button>
               </div>
               <ul id="menu-appliance" class="menu"></ul>
             </div>
@@ -71,13 +84,16 @@
             <button
               id="toggle-utensil"
               class="dropdown__toggle dropdown__toggle--utensil"
+              data-type="utensil"
             >
               Ustensiles
             </button>
-            <div class="toggle-list toggle-list--utensil">
+            <div class="toggle-list toggle-list--utensil" data-type="utensil">
               <div id="search-utensil" class="search">
                 <input type="text" placeholder="Rechercher un ustensile" />
-                <i class="fas fa-chevron-up"></i>
+                <button class="close-dropdown">
+                  <i class="fas fa-chevron-up"></i>
+                </button>
               </div>
               <ul id="menu-utensil" class="menu"></ul>
             </div>

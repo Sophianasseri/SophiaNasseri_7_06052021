@@ -121,6 +121,13 @@ header h1 {
   font-weight: 700;
 }
 
+.option {
+  margin: 5px 0;
+}
+.option:hover {
+  cursor: pointer;
+}
+
 .menu {
   color: #fff;
   padding: 1rem;
@@ -131,7 +138,7 @@ header h1 {
   background: #3282F7;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 5px 35px;
+  gap: 0 35px;
 }
 
 #menu-appliance {
@@ -161,6 +168,60 @@ header h1 {
 }
 #search-utensil input {
   background: #ed6454;
+}
+
+.close-dropdown {
+  color: #fff;
+  background: none;
+  font-size: 17px;
+}
+
+.active {
+  display: block;
+}
+
+.margin-utensil {
+  margin-left: 94px;
+}
+
+.margin-appliance {
+  margin-left: 472px;
+}
+
+.filter-results {
+  margin: 15px 0;
+  display: flex;
+}
+
+.element-result {
+  margin-right: 20px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  max-width: 250px;
+  border-radius: 5px;
+}
+.element-result p {
+  margin-right: 15px;
+}
+
+[data-type=ingredient] {
+  background: #3282F7;
+}
+
+[data-type=appliance] {
+  background: #68D9a4;
+}
+
+[data-type=utensil] {
+  background: #ed6454;
+}
+
+.remove-result {
+  background: none;
+  color: #fff;
+  font-size: 20px;
 }
 
 .searchbar-container {
