@@ -224,6 +224,10 @@ header h1 {
   font-size: 20px;
 }
 
+.search-dropdown {
+  color: #fff;
+}
+
 .searchbar-container {
   background: #e7e7e7;
   display: flex;

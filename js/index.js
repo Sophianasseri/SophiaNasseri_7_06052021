@@ -14,6 +14,7 @@ const utensilBtn = document.querySelector('#toggle-utensil');
 const ingredientToggle = document.querySelector('.toggle-list--ingredient');
 const applianceToggle = document.querySelector('.toggle-list--appliance');
 const filterResults = document.querySelector('.filter-results');
+const ingredientSearch = document.querySelector('.ingredient-search');
 
 const ingredientList = [];
 const applianceList = [];
@@ -77,6 +78,38 @@ const dropdownListDisplay = async () => {
     });
   });
 };
+
+// Dropdowns
+//   Ouverture et fermeture des dropdowns
+const closeDropdown = () => {
+  applianceBtn.classList.remove('margin-appliance');
+  utensilBtn.classList.remove('margin-utensil');
+  toggleLists.forEach((toggleList) => toggleList.classList.remove('active'));
+};
+
+closeDropdownBtn.forEach((btn) => {
+  btn.addEventListener('click', closeDropdown);
+});
+
+dropdowns.forEach((dropdown) => {
+  dropdown.addEventListener('click', (e) => {
+    toggleLists.forEach((toggleList) => {
+      const toggle = toggleList;
+      const toggleData = toggle.dataset.type;
+      const selectedToggle = toggleData.includes(e.target.dataset.type);
+      if (selectedToggle) {
+        toggle.classList.add('active');
+      } else if (ingredientToggle.classList.contains('active')) {
+        applianceBtn.classList.add('margin-appliance');
+      } else if (applianceToggle.classList.contains('active')) {
+        utensilBtn.classList.add('margin-utensil');
+      } else {
+        closeDropdown();
+      }
+    });
+  });
+});
+//   Afficher l'élément cliqué en tant que filtre sélectionné
 const dropdownResultDisplay = async () => {
   const dropdownElements = document.querySelectorAll('.option');
   dropdownElements.forEach((element) => {
@@ -95,22 +128,40 @@ const dropdownResultDisplay = async () => {
     });
   });
 };
+
+//   Supprimer le filtre
 const removeFilterResult = () => {
   const removeResultBtn = document.querySelectorAll('.remove-result');
   removeResultBtn.forEach((btn) => {
     btn.addEventListener('click', (e) => {
-      console.log('hi');
-      console.log(e.target);
     });
   });
 };
 
+
+// Rechercher dans le dropdown
+const searchIngredient = (result) => {
+  ingredientListContainer.innerHTML = '';
+  uniqueIngredientList.map((word) => {
+    if (word.toUpperCase().indexOf(result.toUpperCase()) !== -1) {
+      ingredientListContainer.innerHTML = `<li class="option" data-type="ingredient">${word}</li>`;
+    }
+  });
+};
+
+const displayIngredientResult = async () => {
+  ingredientSearch.addEventListener('input', (e) => { searchIngredient(e.target.value); });
+};
+
 dropdownListDisplay().then(() => {
-  dropdownResultDisplay().then(() => {
-    removeFilterResult();
+  displayIngredientResult().then(() => {
+    dropdownResultDisplay().then(() => {
+      removeFilterResult();
+    });
   });
 });
 
+// Afficher les éléments sans répétiton
 const uniqueIngredientList = [...new Set(ingredientList)];
 
 ingredientListContainer.innerHTML = `
@@ -142,34 +193,3 @@ const filterIngredientsList = recipes => {
   });
   return ingredientList
 } */
-
-// Dropdowns
-
-const closeDropdown = () => {
-  applianceBtn.classList.remove('margin-appliance');
-  utensilBtn.classList.remove('margin-utensil');
-  toggleLists.forEach((toggleList) => toggleList.classList.remove('active'));
-};
-
-dropdowns.forEach((dropdown) => {
-  dropdown.addEventListener('click', (e) => {
-    toggleLists.forEach((toggleList) => {
-      const toggle = toggleList;
-      const toggleData = toggle.dataset.type;
-      const selectedToggle = toggleData.includes(e.target.dataset.type);
-      if (selectedToggle) {
-        toggle.classList.add('active');
-      } else if (ingredientToggle.classList.contains('active')) {
-        applianceBtn.classList.add('margin-appliance');
-      } else if (applianceToggle.classList.contains('active')) {
-        utensilBtn.classList.add('margin-utensil');
-      } else {
-        closeDropdown();
-      }
-    });
-  });
-});
-
-closeDropdownBtn.forEach((btn) => {
-  btn.addEventListener('click', closeDropdown);
-});
