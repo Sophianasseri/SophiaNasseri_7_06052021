@@ -15,6 +15,8 @@ const ingredientToggle = document.querySelector('.toggle-list--ingredient');
 const applianceToggle = document.querySelector('.toggle-list--appliance');
 const filterResults = document.querySelector('.filter-results');
 const ingredientSearch = document.querySelector('.ingredient-search');
+const applianceSearch = document.querySelector('.appliance-search');
+const utensilSearch = document.querySelector('.utensil-search');
 
 const ingredientList = [];
 const applianceList = [];
@@ -55,24 +57,24 @@ const recipesDisplay = () => {
 
 recipesDisplay();
 // Générer le contenu des dropdowns dynamiquement
-const dropdownListDisplay = async () => {
+const dropdownListDisplay = () => {
   recipes.forEach((recipe) => {
     recipe.ingredients.forEach((elt) => {
       const ingredient = normalizeTag(elt.ingredient);
       if (!ingredientList.includes(ingredient)) {
-        ingredientList.push(`<li class="option" data-type="ingredient">${ingredient}</li>`);
+        ingredientList.push(`${ingredient}`);
         ingredientList.sort();
       }
     });
     const appliance = normalizeTag(recipe.appliance);
     if (!applianceList.includes(appliance)) {
-      applianceList.push(`<li class="option" data-type="appliance">${appliance}</li>`);
+      applianceList.push(`${appliance}`);
       applianceList.sort();
     }
     recipe.ustensils.forEach((elt) => {
       const utensil = normalizeTag(elt);
       if (!utensilList.includes(utensil)) {
-        utensilList.push(`<li class="option" data-type="utensil">${utensil}</li>`);
+        utensilList.push(`${utensil}`);
         utensilList.sort();
       }
     });
@@ -110,7 +112,7 @@ dropdowns.forEach((dropdown) => {
   });
 });
 //   Afficher l'élément cliqué en tant que filtre sélectionné
-const dropdownResultDisplay = async () => {
+const dropdownResultDisplay = () => {
   const dropdownElements = document.querySelectorAll('.option');
   dropdownElements.forEach((element) => {
     element.addEventListener('click', (e) => {
@@ -125,59 +127,74 @@ const dropdownResultDisplay = async () => {
         <p>${listContent}</p>
         <button class="remove-result"><i class="far fa-times-circle"></i></button>
       `;
+      // Supprimer le filtre
+      filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
+        filterResultsDiv.remove();
+      });
     });
   });
 };
-
-//   Supprimer le filtre
-const removeFilterResult = () => {
-  const removeResultBtn = document.querySelectorAll('.remove-result');
-  removeResultBtn.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-    });
-  });
-};
-
 
 // Rechercher dans le dropdown
-const searchIngredient = (result) => {
+const searchIngredient = (searchedString) => {
   ingredientListContainer.innerHTML = '';
   uniqueIngredientList.map((word) => {
-    if (word.toUpperCase().indexOf(result.toUpperCase()) !== -1) {
-      ingredientListContainer.innerHTML = `<li class="option" data-type="ingredient">${word}</li>`;
+    if (word.toUpperCase().indexOf(searchedString.toUpperCase()) !== -1) {
+      ingredientListContainer.innerHTML += `<li class="option" data-type="ingredient">${word}</li>`;
+    }
+  });
+};
+const searchAppliance = (searchedString) => {
+  applianceListContainer.innerHTML = '';
+  uniqueApplianceList.map((word) => {
+    if (word.toUpperCase().indexOf(searchedString.toUpperCase()) !== -1) {
+      applianceListContainer.innerHTML += `<li class="option" data-type="appliance">${word}</li>`;
     }
   });
 };
 
-const displayIngredientResult = async () => {
-  ingredientSearch.addEventListener('input', (e) => { searchIngredient(e.target.value); });
+const searchUtensil = (searchedString) => {
+  utensilListContainer.innerHTML = '';
+  uniqueUtensilList.map((word) => {
+    if (word.toUpperCase().indexOf(searchedString.toUpperCase()) !== -1) {
+      utensilListContainer.innerHTML += `<li class="option" data-type="utensil">${word}</li>`;
+    }
+  });
 };
 
-dropdownListDisplay().then(() => {
-  displayIngredientResult().then(() => {
-    dropdownResultDisplay().then(() => {
-      removeFilterResult();
-    });
-  });
+ingredientSearch.addEventListener('input', (e) => {
+  searchIngredient(e.target.value);
+  dropdownResultDisplay();
 });
+applianceSearch.addEventListener('input', (e) => {
+  searchAppliance(e.target.value);
+  dropdownResultDisplay();
+});
+
+utensilSearch.addEventListener('input', (e) => {
+  searchUtensil(e.target.value);
+  dropdownResultDisplay();
+});
+
+dropdownListDisplay();
 
 // Afficher les éléments sans répétiton
 const uniqueIngredientList = [...new Set(ingredientList)];
 
 ingredientListContainer.innerHTML = `
 
-${uniqueIngredientList.join('')}
+${uniqueIngredientList.map((ingredient) => `<li class="option" data-type="ingredient">${ingredient}</li>`).join('')}
  `;
 
 const uniqueApplianceList = [...new Set(applianceList)];
-applianceListContainer.innerHTML = `<ul>
-${uniqueApplianceList.join('')}
-</ul>`;
+applianceListContainer.innerHTML = `
+${uniqueApplianceList.map((appliance) => `<li class="option" data-type="appliance">${appliance}</li>`).join('')}
+`;
 
 const uniqueUtensilList = [...new Set(utensilList)];
-utensilListContainer.innerHTML = `<ul>
-${uniqueUtensilList.join('')}
-</ul>`;
+utensilListContainer.innerHTML = `
+${uniqueUtensilList.map((utensil) => `<li class="option" data-type="utensil">${utensil}</li>`).join('')}
+`;
 
 /*
 const filterIngredientsList = recipes => {
@@ -193,3 +210,4 @@ const filterIngredientsList = recipes => {
   });
   return ingredientList
 } */
+dropdownResultDisplay();
