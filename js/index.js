@@ -22,6 +22,19 @@ const ingredientList = [];
 const applianceList = [];
 const utensilList = [];
 
+const getTagValues = () => {
+  const tagValuesArr = [];
+  document.querySelectorAll('.element-result p').forEach((v) => {
+    const tagValues = v.textContent;
+    tagValuesArr.push(tagValues);
+    document.querySelectorAll('.card-recipe').forEach((card) => {
+      if (tagValuesArr.includes(card.dataset.appliance)) {
+        card.style.display = 'block';
+      }
+    });
+  });
+};
+
 const displayIngQuantity = (elt) => {
   const { ingredient, quantity, unit } = elt;
   return `<span class="bold">${ingredient}</span> ${quantity ? `: ${quantity}` : ''} ${unit || ''}`;
@@ -34,7 +47,7 @@ const recipesDisplay = () => {
       ingredientsQuantity.push(`<li>${displayIngQuantity(recipe.ingredients[i])}</li>`);
     }
     return `
-      <article class="card-recipe">
+      <article class="card-recipe" data-appliance="${recipe.appliance}">
       <div class="image-placeholder"></div>
       <div class="card-text">
         <div class="recipe-info">
@@ -53,6 +66,7 @@ const recipesDisplay = () => {
       </div>
     </article>`;
   }).join('');
+  getTagValues();
 };
 
 recipesDisplay();
@@ -111,6 +125,7 @@ dropdowns.forEach((dropdown) => {
     });
   });
 });
+
 //   Afficher l'élément cliqué en tant que filtre sélectionné
 const dropdownResultDisplay = () => {
   const dropdownElements = document.querySelectorAll('.option');
@@ -131,6 +146,7 @@ const dropdownResultDisplay = () => {
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
         filterResultsDiv.remove();
       });
+      getTagValues();
     });
   });
 };
@@ -211,3 +227,4 @@ const filterIngredientsList = recipes => {
   return ingredientList
 } */
 dropdownResultDisplay();
+
