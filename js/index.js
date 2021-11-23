@@ -170,6 +170,25 @@ const dropdownResultDisplay = () => {
     });
   });
 };
+dropdownListDisplay();
+
+// Afficher les éléments sans répétiton
+const uniqueIngredientList = [...new Set(ingredientList)];
+
+ingredientListContainer.innerHTML = `
+
+${uniqueIngredientList.map((ingredient) => `<li class="option" data-type="ingredient">${ingredient}</li>`).join('')}
+ `;
+
+const uniqueApplianceList = [...new Set(applianceList)];
+applianceListContainer.innerHTML = `
+${uniqueApplianceList.map((appliance) => `<li class="option" data-type="appliance">${appliance}</li>`).join('')}
+`;
+
+const uniqueUtensilList = [...new Set(utensilList)];
+utensilListContainer.innerHTML = `
+${uniqueUtensilList.map((utensil) => `<li class="option" data-type="utensil">${utensil}</li>`).join('')}
+`;
 
 // Rechercher dans le dropdown
 const searchIngredient = (searchedString) => {
@@ -211,26 +230,6 @@ utensilSearch.addEventListener('input', (e) => {
   searchUtensil(e.target.value);
   dropdownResultDisplay();
 });
-
-dropdownListDisplay();
-
-// Afficher les éléments sans répétiton
-const uniqueIngredientList = [...new Set(ingredientList)];
-
-ingredientListContainer.innerHTML = `
-
-${uniqueIngredientList.map((ingredient) => `<li class="option" data-type="ingredient">${ingredient}</li>`).join('')}
- `;
-
-const uniqueApplianceList = [...new Set(applianceList)];
-applianceListContainer.innerHTML = `
-${uniqueApplianceList.map((appliance) => `<li class="option" data-type="appliance">${appliance}</li>`).join('')}
-`;
-
-const uniqueUtensilList = [...new Set(utensilList)];
-utensilListContainer.innerHTML = `
-${uniqueUtensilList.map((utensil) => `<li class="option" data-type="utensil">${utensil}</li>`).join('')}
-`;
 
 /*
 const filterIngredientsList = recipes => {
