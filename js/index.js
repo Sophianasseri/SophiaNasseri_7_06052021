@@ -22,20 +22,24 @@ const ingredientList = [];
 const applianceList = [];
 const utensilList = [];
 
+
 // Afficher les recettes en fonction des tags sélectionnés
 const searchFilter = () => {
   const tagValuesArr = [];
   document.querySelectorAll('.element-result p').forEach((tag) => {
     const tagValues = tag.textContent;
     tagValuesArr.push(tagValues);
-    document.querySelectorAll('.card-recipe').forEach((card) => {
-      const elt = card;
-      if (tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
-        elt.style.display = 'block';
-      } else if (!tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
-        elt.style.display = 'none';
-      }
-    });
+  });
+  document.querySelectorAll('.card-recipe').forEach((card) => {
+    const elt = card;
+    if (tagValuesArr.length > 0 && tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
+      elt.style.display = 'block';
+    } else if (tagValuesArr.length > 0
+      && !tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
+      elt.style.display = 'none';
+    } else if (tagValuesArr.length === 0) {
+      elt.style.display = 'block';
+    }
   });
 };
 
@@ -67,7 +71,7 @@ const recipesDisplay = () => {
       ingredientsQuantity.push(`<li>${displayIngQuantity(recipe.ingredients[i])}</li>`);
     }
     return `
-      <article class="card-recipe" data-value="${normalizeIngredientArr}${normalizeAppliance}${normalizeUtensilArr}">
+      <article class="card-recipe" data-value="${normalizeIngredientArr}, ${normalizeAppliance}, ${normalizeUtensilArr}">
       <div class="image-placeholder"></div>
       <div class="card-text">
         <div class="recipe-info">
@@ -163,8 +167,8 @@ const dropdownResultDisplay = () => {
       `;
       // Supprimer le filtre
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
-        searchFilter();
         filterResultsDiv.remove();
+        searchFilter();
       });
       searchFilter();
     });
