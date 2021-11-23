@@ -22,14 +22,18 @@ const ingredientList = [];
 const applianceList = [];
 const utensilList = [];
 
-const getTagValues = () => {
+// Afficher les recettes en fonction des tags sélectionnés
+const searchFilter = () => {
   const tagValuesArr = [];
-  document.querySelectorAll('.element-result p').forEach((v) => {
-    const tagValues = v.textContent;
+  document.querySelectorAll('.element-result p').forEach((tag) => {
+    const tagValues = tag.textContent;
     tagValuesArr.push(tagValues);
     document.querySelectorAll('.card-recipe').forEach((card) => {
-      if (tagValuesArr.includes(card.dataset.appliance)) {
-        card.style.display = 'block';
+      const elt = card;
+      if (tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
+        elt.style.display = 'block';
+      } else if (!tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
+        elt.style.display = 'none';
       }
     });
   });
@@ -39,15 +43,31 @@ const displayIngQuantity = (elt) => {
   const { ingredient, quantity, unit } = elt;
   return `<span class="bold">${ingredient}</span> ${quantity ? `: ${quantity}` : ''} ${unit || ''}`;
 };
+
+const displayIngredient = (elt) => {
+  const { ingredient } = elt;
+  return `${ingredient}`;
+};
 // Générer les cartes dynamiquement
 const recipesDisplay = () => {
   recipesContainer.innerHTML = recipes.map((recipe) => {
     const ingredientsQuantity = [];
+    const normalizeIngredientArr = [];
+    const normalizeAppliance = (normalizeTag(recipe.appliance));
+    const normalizeUtensilArr = [];
+    let normalizeUtensil;
+    recipe.ustensils.forEach((elt) => {
+      normalizeUtensil = normalizeTag(elt);
+      normalizeUtensilArr.push(normalizeUtensil);
+    });
+    for (let i = 0; i < recipe.ingredients.length; i += 1) {
+      normalizeIngredientArr.push(normalizeTag(displayIngredient(recipe.ingredients[i])));
+    }
     for (let i = 0; i < recipe.ingredients.length; i += 1) {
       ingredientsQuantity.push(`<li>${displayIngQuantity(recipe.ingredients[i])}</li>`);
     }
     return `
-      <article class="card-recipe" data-appliance="${recipe.appliance}">
+      <article class="card-recipe" data-value="${normalizeIngredientArr}${normalizeAppliance}${normalizeUtensilArr}">
       <div class="image-placeholder"></div>
       <div class="card-text">
         <div class="recipe-info">
@@ -66,7 +86,6 @@ const recipesDisplay = () => {
       </div>
     </article>`;
   }).join('');
-  getTagValues();
 };
 
 recipesDisplay();
@@ -144,9 +163,10 @@ const dropdownResultDisplay = () => {
       `;
       // Supprimer le filtre
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
+        searchFilter();
         filterResultsDiv.remove();
       });
-      getTagValues();
+      searchFilter();
     });
   });
 };
@@ -227,4 +247,3 @@ const filterIngredientsList = recipes => {
   return ingredientList
 } */
 dropdownResultDisplay();
-
