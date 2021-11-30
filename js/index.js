@@ -18,14 +18,33 @@ const ingredientSearch = document.querySelector('.ingredient-search');
 const applianceSearch = document.querySelector('.appliance-search');
 const utensilSearch = document.querySelector('.utensil-search');
 
-const ingredientList = [];
+let ingredientList = [];
 const applianceList = [];
 const utensilList = [];
+let displayedRecipesId = [];
 
+// Filtrer le contenu du dropdown en fonction des recettes affichées
+const displayFilteredList = () => {
+  ingredientList = [];
+  const integerId = displayedRecipesId.map((el) => parseInt(el, 10));
+  const filteredRecipesId = recipes.filter((v) => integerId.includes(v.id));
+  filteredRecipesId.forEach((recipe) => {
+    recipe.ingredients.forEach((element) => {
+      const ingredient = normalizeTag(element.ingredient);
+      if (!ingredientList.includes(ingredient)) {
+        ingredientList.push(`${ingredient}`);
+        ingredientList.sort();
+        displayDropdownElements();
+        dropdownResultDisplay();
+      }
+    });
+  });
+};
 
 // Afficher les recettes en fonction des tags sélectionnés
 const searchFilter = () => {
   const tagValuesArr = [];
+  displayedRecipesId = [];
   document.querySelectorAll('.element-result p').forEach((tag) => {
     const tagValues = tag.textContent;
     tagValuesArr.push(tagValues);
@@ -34,11 +53,16 @@ const searchFilter = () => {
     const elt = card;
     if (tagValuesArr.length > 0 && tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
       elt.style.display = 'block';
+      displayedRecipesId.push(elt.dataset.id);
+      displayFilteredList();
     } else if (tagValuesArr.length > 0
       && !tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
       elt.style.display = 'none';
     } else if (tagValuesArr.length === 0) {
       elt.style.display = 'block';
+      dropdownListDisplay();
+      displayDropdownElements();
+      dropdownResultDisplay();
     }
   });
 };
@@ -71,7 +95,7 @@ const recipesDisplay = () => {
       ingredientsQuantity.push(`<li>${displayIngQuantity(recipe.ingredients[i])}</li>`);
     }
     return `
-      <article class="card-recipe" data-value="${normalizeIngredientArr}, ${normalizeAppliance}, ${normalizeUtensilArr}">
+      <article class="card-recipe" data-id="${recipe.id}" data-value="${normalizeIngredientArr}, ${normalizeAppliance}, ${normalizeUtensilArr}">
       <div class="image-placeholder"></div>
       <div class="card-text">
         <div class="recipe-info">
@@ -93,6 +117,7 @@ const recipesDisplay = () => {
 };
 
 recipesDisplay();
+
 // Générer le contenu des dropdowns dynamiquement
 const dropdownListDisplay = () => {
   recipes.forEach((recipe) => {
@@ -177,25 +202,28 @@ const dropdownResultDisplay = () => {
 dropdownListDisplay();
 
 // Afficher les éléments sans répétiton
-const uniqueIngredientList = [...new Set(ingredientList)];
+const displayDropdownElements = () => {
+  const uniqueIngredientList = [...new Set(ingredientList)];
+  ingredientListContainer.innerHTML = `
+  
+  ${uniqueIngredientList.map((ingredient) => `<li class="option" data-type="ingredient">${ingredient}</li>`).join('')}
+   `;
+  const uniqueApplianceList = [...new Set(applianceList)];
+  applianceListContainer.innerHTML = `
+  ${uniqueApplianceList.map((appliance) => `<li class="option" data-type="appliance">${appliance}</li>`).join('')}
+   `;
 
-ingredientListContainer.innerHTML = `
-
-${uniqueIngredientList.map((ingredient) => `<li class="option" data-type="ingredient">${ingredient}</li>`).join('')}
- `;
-
-const uniqueApplianceList = [...new Set(applianceList)];
-applianceListContainer.innerHTML = `
-${uniqueApplianceList.map((appliance) => `<li class="option" data-type="appliance">${appliance}</li>`).join('')}
+  const uniqueUtensilList = [...new Set(utensilList)];
+  utensilListContainer.innerHTML = `
+  ${uniqueUtensilList.map((utensil) => `<li class="option" data-type="utensil">${utensil}</li>`).join('')}
 `;
+};
 
-const uniqueUtensilList = [...new Set(utensilList)];
-utensilListContainer.innerHTML = `
-${uniqueUtensilList.map((utensil) => `<li class="option" data-type="utensil">${utensil}</li>`).join('')}
-`;
+displayDropdownElements();
 
 // Rechercher dans le dropdown
 const searchIngredient = (searchedString) => {
+  const uniqueIngredientList = [...new Set(ingredientList)];
   ingredientListContainer.innerHTML = '';
   uniqueIngredientList.map((word) => {
     if (word.toUpperCase().indexOf(searchedString.toUpperCase()) !== -1) {
@@ -204,6 +232,7 @@ const searchIngredient = (searchedString) => {
   });
 };
 const searchAppliance = (searchedString) => {
+  const uniqueUtensilList = [...new Set(utensilList)];
   applianceListContainer.innerHTML = '';
   uniqueApplianceList.map((word) => {
     if (word.toUpperCase().indexOf(searchedString.toUpperCase()) !== -1) {
@@ -213,6 +242,7 @@ const searchAppliance = (searchedString) => {
 };
 
 const searchUtensil = (searchedString) => {
+  const uniqueUtensilList = [...new Set(utensilList)];
   utensilListContainer.innerHTML = '';
   uniqueUtensilList.map((word) => {
     if (word.toUpperCase().indexOf(searchedString.toUpperCase()) !== -1) {
