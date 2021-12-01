@@ -231,6 +231,10 @@ header h1 {
   color: #fff;
 }
 
+.option .hidden {
+  display: none;
+}
+
 .searchbar-container {
   background: #e7e7e7;
   display: flex;

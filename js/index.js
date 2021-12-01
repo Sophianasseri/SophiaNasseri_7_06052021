@@ -24,7 +24,7 @@ let applianceList = [];
 let utensilList = [];
 let displayedRecipesId = [];
 
-// Générer le contenu des dropdowns dynamiquement en fonction des recetes affichées
+// Générer le contenu des dropdowns dynamiquement en fonction des recettes affichées
 const dropdownListDisplay = (arr) => {
   arr.forEach((recipe) => {
     recipe.ingredients.forEach((elt) => {
@@ -49,6 +49,7 @@ const dropdownListDisplay = (arr) => {
   });
 };
 
+// Déstructuration des ingrédients
 const displayIngQuantity = (elt) => {
   const { ingredient, quantity, unit } = elt;
   return `<span class="bold">${ingredient}</span> ${quantity ? `: ${quantity}` : ''} ${unit || ''}`;
@@ -100,6 +101,28 @@ const recipesDisplay = () => {
 
 recipesDisplay();
 
+dropdownListDisplay(recipes);
+
+// Afficher les éléments sans répétiton
+const displayDropdownElements = () => {
+  const uniqueIngredientList = [...new Set(ingredientList)];
+  ingredientListContainer.innerHTML = `
+  
+  ${uniqueIngredientList.map((ingredient) => `<li class="option" data-type="ingredient">${ingredient}</li>`).join('')}
+   `;
+  const uniqueApplianceList = [...new Set(applianceList)];
+  applianceListContainer.innerHTML = `
+  ${uniqueApplianceList.map((appliance) => `<li class="option" data-type="appliance">${appliance}</li>`).join('')}
+   `;
+
+  const uniqueUtensilList = [...new Set(utensilList)];
+  utensilListContainer.innerHTML = `
+  ${uniqueUtensilList.map((utensil) => `<li class="option" data-type="utensil">${utensil}</li>`).join('')}
+`;
+};
+
+displayDropdownElements();
+
 //   Ouverture et fermeture des dropdowns
 const closeDropdown = () => {
   applianceBtn.classList.remove('margin-appliance');
@@ -129,30 +152,6 @@ dropdowns.forEach((dropdown) => {
     });
   });
 });
-
-//   Afficher l'élément cliqué en tant que filtre sélectionné
-
-dropdownListDisplay(recipes);
-
-// Afficher les éléments sans répétiton
-const displayDropdownElements = () => {
-  const uniqueIngredientList = [...new Set(ingredientList)];
-  ingredientListContainer.innerHTML = `
-  
-  ${uniqueIngredientList.map((ingredient) => `<li class="option" data-type="ingredient">${ingredient}</li>`).join('')}
-   `;
-  const uniqueApplianceList = [...new Set(applianceList)];
-  applianceListContainer.innerHTML = `
-  ${uniqueApplianceList.map((appliance) => `<li class="option" data-type="appliance">${appliance}</li>`).join('')}
-   `;
-
-  const uniqueUtensilList = [...new Set(utensilList)];
-  utensilListContainer.innerHTML = `
-  ${uniqueUtensilList.map((utensil) => `<li class="option" data-type="utensil">${utensil}</li>`).join('')}
-`;
-};
-
-displayDropdownElements();
 
 // Rechercher dans le dropdown
 const searchIngredient = (searchedString) => {
@@ -200,12 +199,23 @@ utensilSearch.addEventListener('input', (e) => {
 
 // Filtrer le contenu du dropdown en fonction des recettes affichées
 const displayFilteredList = () => {
+  const tagValuesArr = [];
   ingredientList = [];
   applianceList = [];
   utensilList = [];
+  document.querySelectorAll('.element-result p').forEach((tag) => {
+    const tagValues = tag.textContent;
+    tagValuesArr.push(tagValues);
+  });
   const integerId = displayedRecipesId.map((el) => parseInt(el, 10));
   const filteredRecipesId = recipes.filter((v) => integerId.includes(v.id));
   dropdownListDisplay(filteredRecipesId);
+  const filteredIngredientList = ingredientList.filter((v) => !tagValuesArr.includes(v));
+  ingredientList = filteredIngredientList;
+  const filteredApplianceList = applianceList.filter((v) => !tagValuesArr.includes(v));
+  applianceList = filteredApplianceList;
+  const filteredUtensilist = utensilList.filter((v) => !tagValuesArr.includes(v));
+  utensilList = filteredUtensilist;
   displayDropdownElements();
   dropdownResultDisplay();
 };
@@ -236,6 +246,7 @@ const searchFilter = () => {
   });
 };
 
+// Générer un tag en fonction de l'élément cliqué
 const dropdownResultDisplay = () => {
   const dropdownElements = document.querySelectorAll('.option');
   dropdownElements.forEach((element) => {
