@@ -325,6 +325,14 @@ header h1 {
   font-size: 12px;
 }
 
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
 .recipes {
   margin-top: 30px;
   display: grid;

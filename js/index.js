@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable import/extensions */
 import recipes from './recipes.js';
-import { normalizeTag } from './functions.js';
+import { normalizeTag, normalize } from './functions.js';
 // Eléments DOM
 const recipesContainer = document.querySelector('.recipes');
 const ingredientListContainer = document.querySelector('#menu-ingredient');
@@ -18,6 +18,7 @@ const filterResults = document.querySelector('.filter-results');
 const ingredientSearch = document.querySelector('.ingredient-search');
 const applianceSearch = document.querySelector('.appliance-search');
 const utensilSearch = document.querySelector('.utensil-search');
+const searchInput = document.querySelector('.main-search');
 
 let ingredientList = [];
 let applianceList = [];
@@ -52,7 +53,7 @@ const dropdownListDisplay = (arr) => {
 // Déstructuration des ingrédients
 const displayIngQuantity = (elt) => {
   const { ingredient, quantity, unit } = elt;
-  return `<span class="bold">${ingredient}</span> ${quantity ? `: ${quantity}` : ''} ${unit || ''}`;
+  return `<span class="bold recipe-ingredient">${ingredient}</span> ${quantity ? `: ${quantity}` : ''} ${unit || ''}`;
 };
 
 const displayIngredient = (elt) => {
@@ -78,11 +79,11 @@ const recipesDisplay = () => {
       ingredientsQuantity.push(`<li>${displayIngQuantity(recipe.ingredients[i])}</li>`);
     }
     return `
-      <article class="card-recipe" data-id="${recipe.id}" data-value="${normalizeIngredientArr}, ${normalizeAppliance}, ${normalizeUtensilArr}">
+      <article class="card-recipe show" data-id="${recipe.id}" data-value="${normalizeIngredientArr}, ${normalizeAppliance}, ${normalizeUtensilArr}">
       <div class="image-placeholder"></div>
       <div class="card-text">
         <div class="recipe-info">
-          <h2>${recipe.name}</h2>
+          <h2 class='recipe-title'>${recipe.name}</h2>
           <div class="recipe-time">
             <i class="far fa-clock"></i>
             <p>${recipe.time} min</p>
@@ -92,7 +93,7 @@ const recipesDisplay = () => {
           <ul>
            ${ingredientsQuantity.join('')}
           </ul>
-          <p>${recipe.description}</p>
+          <p class="recipe-steps">${recipe.description}</p>
         </div>
       </div>
     </article>`;
@@ -221,7 +222,7 @@ const displayFilteredList = () => {
 };
 
 // Afficher les recettes en fonction des tags sélectionnés
-const searchFilter = () => {
+const searchFilter = async () => {
   const tagValuesArr = [];
   displayedRecipesId = [];
   document.querySelectorAll('.element-result p').forEach((tag) => {
@@ -231,14 +232,17 @@ const searchFilter = () => {
   document.querySelectorAll('.card-recipe').forEach((card) => {
     const elt = card;
     if (tagValuesArr.length > 0 && tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
-      elt.style.display = 'block';
+      elt.classList.add('show');
+      elt.classList.remove('hide');
       displayedRecipesId.push(elt.dataset.id);
       displayFilteredList();
     } else if (tagValuesArr.length > 0
       && !tagValuesArr.every((v) => elt.dataset.value.includes(v))) {
-      elt.style.display = 'none';
+      elt.classList.remove('show');
+      elt.classList.add('hide');
     } else if (tagValuesArr.length === 0) {
-      elt.style.display = 'block';
+      elt.classList.add('show');
+      elt.classList.remove('hide');
       dropdownListDisplay(recipes);
       displayDropdownElements();
       dropdownResultDisplay();
@@ -265,12 +269,53 @@ const dropdownResultDisplay = () => {
       // Supprimer le filtre
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
         filterResultsDiv.remove();
-        searchFilter();
+        handleSearch();
       });
       searchFilter();
     });
   });
 };
+dropdownResultDisplay();
+function handleSearch() {
+  searchFilter();
+}
+
+// Recherche principale
+
+searchInput.addEventListener('input', (e) => {
+  const cardContent = [];
+  ingredientList = [];
+  applianceList = [];
+  utensilList = [];
+  displayedRecipesId = [];
+  const normalizeInputValue = normalize(e.target.value).toUpperCase();
+  if (e.target.value.length > 2) {
+    document.querySelectorAll('.show').forEach((card) => {
+      const recipeName = normalize(card.querySelector('.recipe-title').textContent);
+      const recipeDescription = normalize(card.querySelector('.recipe-steps').textContent);
+      displayedRecipesId.push(card.dataset.id);
+      const integerId = displayedRecipesId.map((el) => parseInt(el, 10));
+      const filteredRecipesId = recipes.filter((v) => integerId.includes(v.id));
+      dropdownListDisplay(filteredRecipesId);
+      displayDropdownElements();
+      dropdownResultDisplay();
+      card.querySelectorAll('.recipe-ingredient').forEach((elt) => {
+        cardContent.push(normalize(elt.textContent));
+      });
+      cardContent.push(recipeName, recipeDescription);
+      cardContent.forEach((word) => {
+        if (word.toUpperCase().indexOf(normalizeInputValue) !== -1) {
+          card.classList.add('show');
+          card.classList.remove('hide');
+          displayFilteredList();
+        } else {
+          card.classList.remove('show');
+          card.classList.add('hide');
+        }
+      });
+    });
+  }
+});
 
 /*
 const filterIngredientsList = recipes => {
@@ -286,4 +331,3 @@ const filterIngredientsList = recipes => {
   });
   return ingredientList
 } */
-dropdownResultDisplay();
