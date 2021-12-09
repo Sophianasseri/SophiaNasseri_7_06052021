@@ -61,8 +61,8 @@ const displayIngredient = (elt) => {
   return `${ingredient}`;
 };
 // Générer les cartes dynamiquement
-const recipesDisplay = () => {
-  recipesContainer.innerHTML = recipes.map((recipe) => {
+const recipesDisplay = (recipeData) => {
+  const str = recipeData.map((recipe) => {
     const ingredientsQuantity = [];
     const normalizeIngredientArr = [];
     const normalizeAppliance = (normalizeTag(recipe.appliance));
@@ -98,9 +98,10 @@ const recipesDisplay = () => {
       </div>
     </article>`;
   }).join('');
+  recipesContainer.innerHTML = str;
 };
 
-recipesDisplay();
+recipesDisplay(recipes);
 
 dropdownListDisplay(recipes);
 
@@ -199,7 +200,7 @@ utensilSearch.addEventListener('input', (e) => {
 });
 
 // Filtrer le contenu du dropdown en fonction des recettes affichées
-const displayFilteredList = () => {
+const displayFilteredList = (recipes) => {
   const tagValuesArr = [];
   ingredientList = [];
   applianceList = [];
@@ -280,42 +281,65 @@ function handleSearch() {
   searchFilter();
 }
 
-// Recherche principale
-
-searchInput.addEventListener('input', (e) => {
-  const cardContent = [];
+const filteredDropdownMainSearch = () => {
   ingredientList = [];
   applianceList = [];
   utensilList = [];
+  const integerId = displayedRecipesId.map((el) => parseInt(el, 10));
+  const filteredRecipesId = recipes.filter((v) => integerId.includes(v.id));
+  dropdownListDisplay(filteredRecipesId);
+  displayDropdownElements();
+  dropdownResultDisplay();
+};
+
+// Recherche principale
+
+searchInput.addEventListener('input', (e) => {
   displayedRecipesId = [];
-  const normalizeInputValue = normalize(e.target.value).toUpperCase();
   if (e.target.value.length > 2) {
-    document.querySelectorAll('.show').forEach((card) => {
-      const recipeName = normalize(card.querySelector('.recipe-title').textContent);
-      const recipeDescription = normalize(card.querySelector('.recipe-steps').textContent);
+    const searchedstr = normalize(e.target.value).toUpperCase();
+    const filteredRecipes = recipes.filter((recipe) => normalize(recipe.name.toUpperCase())
+      .includes(searchedstr)
+     || recipe.description.includes(searchedstr)
+     || recipe.ingredients.some((elt) => normalize(elt.ingredient.toUpperCase())
+       .includes(searchedstr)));
+    recipesDisplay(filteredRecipes);
+    document.querySelectorAll('.card-recipe').forEach((card) => {
       displayedRecipesId.push(card.dataset.id);
-      const integerId = displayedRecipesId.map((el) => parseInt(el, 10));
-      const filteredRecipesId = recipes.filter((v) => integerId.includes(v.id));
-      dropdownListDisplay(filteredRecipesId);
-      displayDropdownElements();
-      dropdownResultDisplay();
-      card.querySelectorAll('.recipe-ingredient').forEach((elt) => {
-        cardContent.push(normalize(elt.textContent));
-      });
-      cardContent.push(recipeName, recipeDescription);
-      cardContent.forEach((word) => {
-        if (word.toUpperCase().indexOf(normalizeInputValue) !== -1) {
-          card.classList.add('show');
-          card.classList.remove('hide');
-          displayFilteredList();
-        } else {
-          card.classList.remove('show');
-          card.classList.add('hide');
-        }
-      });
+      filteredDropdownMainSearch();
     });
   }
+  if (e.target.value.length < 3) {
+    recipesDisplay(recipes);
+  }
 });
+
+/* searchInput.addEventListener('input', (e) => {
+  cardContent = [];
+  displayedRecipesId = [];
+  const normalizeInputValue = normalize(e.target.value).toUpperCase();
+  document.querySelectorAll('.show').forEach((card) => {
+    const recipeName = normalize(card.querySelector('.recipe-title').textContent.toUpperCase());
+    const recipeDescription = normalize(card.querySelector('.recipe-steps').textContent.toUpperCase());
+    card.querySelectorAll('.recipe-ingredient').forEach((elt) => {
+      cardContent.push(normalize(elt.textContent.toUpperCase()));
+    });
+    console.log(cardContent);
+    if (e.target.value.length > 2) {
+      if (cardContent.includes(normalizeInputValue)) {
+        card.classList.add('show');
+        card.classList.remove('hide');
+        setTimeout(() => {
+          displayedRecipesId.push(card.dataset.id);
+          test();
+        }, 2000);
+      } else {
+        card.classList.remove('show');
+        card.classList.add('hide');
+      }
+    }
+  });
+}); */
 
 /*
 const filterIngredientsList = recipes => {
