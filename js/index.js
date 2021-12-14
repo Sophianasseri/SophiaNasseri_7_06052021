@@ -30,8 +30,8 @@ let previousRecipes = [];
 
 const noResultDisplay = () => {
   if (newRecipes.length === 0) {
-    recipesContainer.innerHTML = `
-    <p class="no-result-message">Aucune recette ne correspond à votre critère... vous pouvez chercher "tarte aux pommes", "poisson", etc.</p>
+    document.querySelector('.recipes-no-result').innerHTML = `
+    <p>Aucune recette ne correspond à votre critère... vous pouvez chercher "tarte aux pommes", "poisson", etc.</p>
     `;
   }
 };
@@ -241,6 +241,7 @@ const searchFilter = async () => {
     tagValuesArr = [];
     const tagValues = tag.textContent.toUpperCase();
     tagValuesArr.push(tagValues);
+    console.log(tagValuesArr);
   });
   const filteredRecipes = newRecipes.filter((recipe) => recipe.ingredients
     .some((elt) => tagValuesArr
@@ -299,6 +300,21 @@ function handleSearch() {
     dropdownListDisplay(newRecipes);
     displayDropdownElements();
     dropdownResultDisplay();
+    /*if (searchInput && searchInput.value.length > 2) {
+      const searchedstr = normalize(searchInput.value).toUpperCase();
+      const filteredRecipes = newRecipes.filter((recipe) => normalize(recipe.name.toUpperCase())
+        .includes(searchedstr)
+      || normalize(recipe.description.toUpperCase()).includes(searchedstr)
+      || recipe.ingredients.some((elt) => normalize(elt.ingredient.toUpperCase())
+        .includes(searchedstr)));
+      recipesDisplay(filteredRecipes);
+      newRecipes = filteredRecipes;
+      noResultDisplay();
+      document.querySelectorAll('.card-recipe').forEach((card) => {
+        displayedRecipesId.push(card.dataset.id);
+        filteredDropdownMainSearch();
+      });
+    }*/
   }
 }
 
@@ -315,6 +331,7 @@ const filteredDropdownMainSearch = () => {
 };
 
 searchInput.addEventListener('input', (e) => {
+  previousRecipes = newRecipes;
   displayedRecipesId = [];
   if (e.target.value.length > 2) {
     const searchedstr = normalize(e.target.value).toUpperCase();

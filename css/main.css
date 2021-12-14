@@ -338,4 +338,8 @@ header h1 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 0 10%;
+}
+
+.recipes-no-result {
+  font-size: 30px;
 }/*# sourceMappingURL=main.css.map */
