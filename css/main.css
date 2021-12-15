@@ -20,6 +20,11 @@ button {
   width: 100%;
   margin: 0 70px;
 }
+@media screen and (max-width: 768px) {
+  .page-container {
+    margin: 0 15px;
+  }
+}
 
 body {
   display: flex;
@@ -42,10 +47,20 @@ header h1 {
   display: flex;
   margin-top: 10px;
 }
+@media screen and (max-width: 768px) {
+  .filter {
+    flex-direction: column;
+  }
+}
 
 .dropdown {
   position: relative;
   margin-right: 20px;
+}
+@media screen and (max-width: 768px) {
+  .dropdown {
+    margin: 10px 0;
+  }
 }
 .dropdown__toggle {
   padding: 1.5rem 0.8rem;
@@ -56,6 +71,11 @@ header h1 {
   color: #fff;
   width: 160px;
   position: relative;
+}
+@media screen and (max-width: 768px) {
+  .dropdown__toggle {
+    width: 100%;
+  }
 }
 .dropdown__toggle::after {
   content: "";
@@ -85,6 +105,11 @@ header h1 {
   width: 630px;
   display: none;
 }
+@media screen and (max-width: 1200px) {
+  .toggle-list--ingredient {
+    width: 250px;
+  }
+}
 .toggle-list--appliance {
   width: 250px;
   display: none;
@@ -92,6 +117,11 @@ header h1 {
 .toggle-list--utensil {
   width: 250px;
   display: none;
+}
+@media screen and (max-width: 768px) {
+  .toggle-list {
+    width: 100%;
+  }
 }
 
 .search {
@@ -143,13 +173,37 @@ header h1 {
   overflow: auto;
   max-height: 50vh;
 }
+@media screen and (max-width: 1200px) {
+  #menu-ingredient {
+    grid-template-columns: 1fr;
+  }
+}
+@media screen and (max-width: 768px) {
+  #menu-ingredient {
+    max-height: 25vh;
+  }
+}
 
 #menu-appliance {
+  max-height: 50vh;
+  overflow: auto;
   background: #68D9a4;
+}
+@media screen and (max-width: 768px) {
+  #menu-appliance {
+    max-height: 25vh;
+  }
 }
 
 #menu-utensil {
   background: #ed6454;
+  max-height: 50vh;
+  overflow: auto;
+}
+@media screen and (max-width: 768px) {
+  #menu-utensil {
+    max-height: 25vh;
+  }
 }
 
 #search-ingredient {
@@ -186,9 +240,24 @@ header h1 {
 .margin-utensil {
   margin-left: 94px;
 }
+@media screen and (max-width: 768px) {
+  .margin-utensil {
+    margin: 211px 0 0 0;
+  }
+}
 
 .margin-appliance {
   margin-left: 472px;
+}
+@media screen and (max-width: 1200px) {
+  .margin-appliance {
+    margin-left: 90px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .margin-appliance {
+    margin: 211px 0 0 0;
+  }
 }
 
 .filter-results {
@@ -248,9 +317,25 @@ header h1 {
   border: none;
   background: #e7e7e7;
 }
+@media screen and (max-width: 768px) {
+  .searchbar-container input::-moz-placeholder {
+    font-size: 10px;
+  }
+  .searchbar-container input:-ms-input-placeholder {
+    font-size: 10px;
+  }
+  .searchbar-container input::placeholder {
+    font-size: 10px;
+  }
+}
 .searchbar-container button {
   background: #e7e7e7;
   font-size: 20px;
+}
+@media screen and (max-width: 768px) {
+  .searchbar-container button {
+    font-size: 15px;
+  }
 }
 
 .image-placeholder {
@@ -261,8 +346,26 @@ header h1 {
 
 .card-recipe {
   height: 364px;
-  max-width: 380px;
+  max-width: 460px;
+  width: 28vw;
   margin: 10px 0;
+}
+@media screen and (max-width: 1200px) {
+  .card-recipe {
+    width: 42vw;
+    max-width: 510px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .card-recipe {
+    width: 100%;
+    max-width: 768px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .card-recipe {
+    min-width: 320px;
+  }
 }
 
 .card-text {
@@ -278,13 +381,29 @@ header h1 {
   align-items: center;
 }
 .recipe-info h2 {
-  width: 260px;
+  max-width: 320px;
+  width: 17vw;
   font-weight: normal;
   font-size: 18px;
   padding: 1rem 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+@media screen and (max-width: 1200px) {
+  .recipe-info h2 {
+    width: 29vw;
+  }
+}
+@media screen and (max-width: 992px) {
+  .recipe-info h2 {
+    width: 23vw;
+  }
+}
+@media screen and (max-width: 600px) {
+  .recipe-info h2 {
+    width: 53vw;
+  }
 }
 
 .recipe-time {
@@ -337,9 +456,25 @@ header h1 {
   margin-top: 30px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 0 10%;
+  gap: 0 20px;
+}
+@media screen and (max-width: 1200px) {
+  .recipes {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media screen and (max-width: 768px) {
+  .recipes {
+    grid-template-columns: 1fr;
+  }
 }
 
 .recipes-no-result {
-  font-size: 30px;
+  font-size: 20px;
+  text-align: center;
+}
+@media screen and (max-width: 768px) {
+  .recipes-no-result {
+    font-size: 15px;
+  }
 }/*# sourceMappingURL=main.css.map */
