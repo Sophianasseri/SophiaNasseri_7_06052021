@@ -146,6 +146,12 @@ closeDropdownBtn.forEach((btn) => {
   btn.addEventListener('click', closeDropdown);
 });
 
+toggleLists.forEach((toggleList) => {
+  toggleList.addEventListener('blur', () => {
+    closeDropdown();
+  });
+});
+
 dropdowns.forEach((dropdown) => {
   dropdown.addEventListener('click', (e) => {
     toggleLists.forEach((toggleList) => {
@@ -153,6 +159,7 @@ dropdowns.forEach((dropdown) => {
       const toggleData = toggle.dataset.type;
       const selectedToggle = toggleData.includes(e.target.dataset.type);
       if (selectedToggle) {
+        closeDropdown();
         toggle.classList.add('active');
       } else if (ingredientToggle.classList.contains('active')) {
         applianceBtn.classList.add('margin-appliance');
@@ -300,7 +307,7 @@ function handleSearch() {
     dropdownListDisplay(newRecipes);
     displayDropdownElements();
     dropdownResultDisplay();
-    /*if (searchInput && searchInput.value.length > 2) {
+    /* if (searchInput && searchInput.value.length > 2) {
       const searchedstr = normalize(searchInput.value).toUpperCase();
       const filteredRecipes = newRecipes.filter((recipe) => normalize(recipe.name.toUpperCase())
         .includes(searchedstr)
@@ -314,7 +321,7 @@ function handleSearch() {
         displayedRecipesId.push(card.dataset.id);
         filteredDropdownMainSearch();
       });
-    }*/
+    } */
   }
 }
 
