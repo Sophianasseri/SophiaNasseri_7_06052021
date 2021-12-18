@@ -26,7 +26,6 @@ let utensilList = [];
 let tagValuesArr = [];
 let displayedRecipesId = [];
 let newRecipes = [...recipes];
-let previousRecipes = [];
 let filteresRecipesWithTags = [];
 
 const noResultDisplay = () => {
@@ -240,33 +239,21 @@ const displayFilteredList = () => {
   dropdownResultDisplay();
 };
 // Afficher les recettes en fonction des tags sélectionnés
-const searchFilter = async () => {
-  previousRecipes = newRecipes;
-  tagValuesArr = [];
-  displayedRecipesId = [];
-  tagValuesArr = [];
-  document.querySelectorAll('.element-result p').forEach((tag) => {
-    const tagValues = tag.textContent.toUpperCase();
-    tagValuesArr.push(tagValues);
-  });
-  const filteredRecipes = newRecipes.filter((recipe) => recipe.ingredients
-    .some((elt) => tagValuesArr
-      .includes(normalize(elt.ingredient.toUpperCase())))
-  || tagValuesArr
-    .includes(normalize(recipe.appliance.toUpperCase()))
-  || recipe.ustensils
-    .some((elt) => tagValuesArr
-      .includes(normalize(elt.toUpperCase()))));
-
-  if (tagValuesArr.length > 0) {
-    recipesDisplay(filteredRecipes);
-    newRecipes = filteredRecipes;
-    filteresRecipesWithTags = newRecipes;
-    document.querySelectorAll('.card-recipe').forEach((card) => {
-      displayedRecipesId.push(card.dataset.id);
-      displayFilteredList();
-    });
+const searchFilter = async (remove = false) => {
+  if (remove) {
+    newRecipes = [...recipes];
   }
+  displayedRecipesId = [];
+  let filteredRecipes = [...newRecipes];
+  filteredRecipes = [...filterRecipesByTags(filteredRecipes)];
+
+  recipesDisplay(filteredRecipes);
+  newRecipes = filteredRecipes;
+  filteresRecipesWithTags = newRecipes;
+  document.querySelectorAll('.card-recipe').forEach((card) => {
+    displayedRecipesId.push(card.dataset.id);
+    displayFilteredList();
+  });
 };
 
 // Générer un tag en fonction de l'élément cliqué
@@ -288,30 +275,25 @@ const dropdownResultDisplay = () => {
       // Supprimer le filtre
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
         filterResultsDiv.remove();
-        handleSearch();
+        searchFilter(true);
       });
       searchFilter();
     });
   });
 };
 dropdownResultDisplay();
-function handleSearch() {
-  tagValuesArr = [];
-  recipesDisplay(previousRecipes);
-  document.querySelectorAll('.card-recipe').forEach((card) => {
-    displayedRecipesId.push(card.dataset.id);
-    displayFilteredList();
+function filterRecipesByTags(recipesToFilter) {
+  let filtered = [...recipesToFilter];
+  document.querySelectorAll('.element-result p').forEach((tag) => {
+    const tagValue = tag.textContent.toUpperCase();
+    filtered = [...filtered.filter((recipe) => (
+      recipe.ingredients.some((elt) => tagValue === normalize(elt.ingredient.toUpperCase()))
+      || tagValue === normalize(recipe.appliance.toUpperCase())
+      || recipe.ustensils.some((elt) => tagValue === normalize(elt.toUpperCase()))
+    ))];
+    tagValuesArr.push(tagValue);
   });
-  if (tagValuesArr.length === 0) {
-    newRecipes = [...recipes];
-    recipesDisplay(newRecipes);
-    dropdownListDisplay(newRecipes);
-    displayDropdownElements();
-    dropdownResultDisplay();
-    if (searchInput && searchInput.value.length > 2) {
-      mainSearch(newRecipes);
-    }
-  }
+  return filtered;
 }
 
 // Recherche principale
@@ -344,7 +326,6 @@ const mainSearch = (arr) => {
 };
 
 searchInput.addEventListener('keyup', (e) => {
-  previousRecipes = newRecipes;
   displayedRecipesId = [];
   if (e.target.value.length > 2) {
     if (e.key === 'Backspace') {
