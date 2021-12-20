@@ -29,11 +29,13 @@ let newRecipes = [...recipes];
 let filteresRecipesWithTags = [];
 let inputValueLength = [];
 
-const noResultDisplay = () => {
-  if (newRecipes.length === 0) {
+const noResultDisplay = (arr) => {
+  if (arr.length === 0) {
     document.querySelector('.recipes-no-result').innerHTML = `
     <p>Aucune recette ne correspond à votre critère... vous pouvez chercher "tarte aux pommes", "poisson", etc.</p>
     `;
+  } else {
+    document.querySelector('.recipes-no-result').innerHTML = '';
   }
 };
 
@@ -240,7 +242,7 @@ const displayFilteredList = () => {
   dropdownResultDisplay();
 };
 // Afficher les recettes en fonction des tags sélectionnés
-const searchFilter = async (remove = false) => {
+const searchFilter = (remove = false) => {
   if (remove) {
     newRecipes = [...recipes];
   }
@@ -308,7 +310,22 @@ const filteredDropdownMainSearch = () => {
   dropdownResultDisplay();
 };
 
-const mainSearch = (recipesToFilter) => {
+const mainSearchDisplay = (remove = false) => {
+  let filteredRecipes = [...newRecipes];
+  if (remove) {
+    newRecipes = [...recipes];
+    filteredRecipes = newRecipes;
+  }
+  filteredRecipes = [...mainSearchFilter(filteredRecipes)];
+  recipesDisplay(filteredRecipes);
+  noResultDisplay(filteredRecipes);
+  document.querySelectorAll('.card-recipe').forEach((card) => {
+    displayedRecipesId.push(card.dataset.id);
+    filteredDropdownMainSearch();
+  });
+};
+
+const mainSearchFilter = (recipesToFilter) => {
   const searchedstr = normalize(searchInput.value).toUpperCase();
   const filtered = [...recipesToFilter]
     .filter((recipe) => normalize(recipe.name.toUpperCase())
@@ -319,30 +336,14 @@ const mainSearch = (recipesToFilter) => {
   return filtered;
 };
 
-searchInput.addEventListener('keyup', (e) => {
+searchInput.addEventListener('input', (e) => {
   displayedRecipesId = [];
-  let filteredRecipes = [...newRecipes];
+
   if (e.target.value.length > 2) {
     if (e.target.value.length < Number(inputValueLength.join(''))) {
-      newRecipes = [...recipes];
-      filteredRecipes = newRecipes;
-      filteredRecipes = [...mainSearch(filteredRecipes)];
-      recipesDisplay(filteredRecipes);
-      noResultDisplay();
-      document.querySelectorAll('.card-recipe').forEach((card) => {
-        displayedRecipesId.push(card.dataset.id);
-        filteredDropdownMainSearch();
-      });
-    } else {
-      filteredRecipes = [...mainSearch(filteredRecipes)];
-      newRecipes = filteredRecipes;
-      recipesDisplay(filteredRecipes);
-      noResultDisplay();
-      document.querySelectorAll('.card-recipe').forEach((card) => {
-        displayedRecipesId.push(card.dataset.id);
-        filteredDropdownMainSearch();
-      });
+      mainSearchDisplay(true);
     }
+    mainSearchDisplay();
   } else if (e.target.value.length < 3 && tagValuesArr.length === 0) {
     newRecipes = [...recipes];
     recipesDisplay(newRecipes);
