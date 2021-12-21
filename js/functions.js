@@ -1,7 +1,6 @@
 const lowerCase = (str) => str.toLowerCase();
 export const normalize = (str) => str.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
-// eslint-disable-next-line import/prefer-default-export
 export const normalizeTag = (str) => {
   const newStr = lowerCase(normalize(str));
   const arrayStr = newStr.split('');

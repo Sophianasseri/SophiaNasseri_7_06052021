@@ -26,7 +26,6 @@ let utensilList = [];
 let tagValuesArr = [];
 let displayedRecipesId = [];
 let newRecipes = [...recipes];
-let filteresRecipesWithTags = [];
 let inputValueLength = [];
 
 const noResultDisplay = (arr) => {
@@ -149,12 +148,6 @@ closeDropdownBtn.forEach((btn) => {
   btn.addEventListener('click', closeDropdown);
 });
 
-toggleLists.forEach((toggleList) => {
-  toggleList.addEventListener('blur', () => {
-    closeDropdown();
-  });
-});
-
 dropdowns.forEach((dropdown) => {
   dropdown.addEventListener('click', (e) => {
     toggleLists.forEach((toggleList) => {
@@ -251,7 +244,6 @@ const searchFilter = (remove = false) => {
   filteredRecipes = [...filterRecipesByTags(filteredRecipes)];
   recipesDisplay(filteredRecipes);
   newRecipes = filteredRecipes;
-  filteresRecipesWithTags = newRecipes;
   document.querySelectorAll('.card-recipe').forEach((card) => {
     displayedRecipesId.push(card.dataset.id);
     displayFilteredList();
@@ -278,6 +270,9 @@ const dropdownResultDisplay = () => {
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
         filterResultsDiv.remove();
         searchFilter(true);
+        if (searchInput.value.length > 2) {
+          mainSearchDisplay();
+        }
       });
       searchFilter();
     });
@@ -310,7 +305,7 @@ const filteredDropdownMainSearch = () => {
   dropdownResultDisplay();
 };
 
-const mainSearchDisplay = (remove = false) => {
+/*const mainSearchDisplay = (remove = false) => {
   let filteredRecipes = [...newRecipes];
   if (remove) {
     newRecipes = [...recipes];
@@ -319,6 +314,7 @@ const mainSearchDisplay = (remove = false) => {
   filteredRecipes = [...mainSearchFilter(filteredRecipes)];
   recipesDisplay(filteredRecipes);
   noResultDisplay(filteredRecipes);
+  newRecipes = filteredRecipes;
   document.querySelectorAll('.card-recipe').forEach((card) => {
     displayedRecipesId.push(card.dataset.id);
     filteredDropdownMainSearch();
@@ -336,12 +332,16 @@ const mainSearchFilter = (recipesToFilter) => {
   return filtered;
 };
 
-searchInput.addEventListener('input', (e) => {
+searchInput.addEventListener('inpt', (e) => {
   displayedRecipesId = [];
-
   if (e.target.value.length > 2) {
     if (e.target.value.length < Number(inputValueLength.join(''))) {
-      mainSearchDisplay(true);
+      if (tagValuesArr.length > 0) {
+        mainSearchDisplay(true);
+        searchFilter();
+      } else {
+        mainSearchDisplay(true);
+      }
     }
     mainSearchDisplay();
   } else if (e.target.value.length < 3 && tagValuesArr.length === 0) {
@@ -351,39 +351,63 @@ searchInput.addEventListener('input', (e) => {
     displayDropdownElements();
     dropdownResultDisplay();
   } else if (e.target.value.length < 3 && tagValuesArr.length > 0) {
-    recipesDisplay(filteresRecipesWithTags);
-    dropdownListDisplay(filteresRecipesWithTags);
-    displayDropdownElements();
-    dropdownResultDisplay();
+    newRecipes = [...recipes];
+    searchFilter();
   }
   inputValueLength = [];
   inputValueLength.push(e.target.value.length);
-});
+});*/
 
-/* searchInput.addEventListener('input', (e) => {
-  displayedRecipesId = [];
+const mainSearchFilter = (recipesToFilter) => {
+  const searchedstr = normalize(searchInput.value).toUpperCase();
+  const newRecipesToFilter = [...recipesToFilter];
   const filteredRecipes = [];
+  for (let i = 0; i < newRecipesToFilter.length; i += 1) {
+    if (normalize(newRecipesToFilter[i].name.toUpperCase()).includes(searchedstr)) {
+      filteredRecipes.push(newRecipesToFilter[i]);
+    }
+    if (normalize(newRecipesToFilter[i].description.toUpperCase()).includes(searchedstr)) {
+      filteredRecipes.push(newRecipesToFilter[i]);
+    }
+    for (let j = 0; j < newRecipesToFilter[i].ingredients.length; j += 1) {
+      if (normalize(newRecipesToFilter[i].ingredients[j].ingredient.toUpperCase())
+        .includes(searchedstr)) {
+        filteredRecipes.push(newRecipesToFilter[i]);
+      }
+    }
+  }
+  const UniqueFilteredRecipes = [...new Set(filteredRecipes)];
+  return UniqueFilteredRecipes;
+};
+
+const mainSearchDisplay = (remove = false) => {
+  let filteredRecipes = [...newRecipes];
+  if (remove) {
+    newRecipes = [...recipes];
+    filteredRecipes = newRecipes;
+  }
+  filteredRecipes = [...mainSearchFilter(filteredRecipes)];
+  recipesDisplay(filteredRecipes);
+  noResultDisplay(filteredRecipes);
+  newRecipes = filteredRecipes;
+  for (let i = 0; i < document.querySelectorAll('.card-recipe').length; i += 1) {
+    displayedRecipesId.push(document.querySelectorAll('.card-recipe')[i].dataset.id);
+    filteredDropdownMainSearch();
+  }
+};
+
+searchInput.addEventListener('input', (e) => {
+  displayedRecipesId = [];
   if (e.target.value.length > 2) {
-    const searchedstr = normalize(e.target.value).toUpperCase();
-    for (let i = 0; i < newRecipes.length; i += 1) {
-      if (normalize(newRecipes[i].name.toUpperCase()).includes(searchedstr)) {
-        filteredRecipes.push(newRecipes[i]);
-      }
-      if (normalize(newRecipes[i].description.toUpperCase()).includes(searchedstr)) {
-        filteredRecipes.push(recipes[i]);
-      }
-      for (let j = 0; j < newRecipes[i].ingredients.length; j += 1) {
-        if (normalize(newRecipes[i].ingredients[j].ingredient.toUpperCase())
-          .includes(searchedstr)) {
-          filteredRecipes.push(newRecipes[i]);
-        }
+    if (e.target.value.length < Number(inputValueLength.join(''))) {
+      if (tagValuesArr.length > 0) {
+        mainSearchDisplay(true);
+        searchFilter();
+      } else {
+        mainSearchDisplay(true);
       }
     }
-    recipesDisplay(filteredRecipes);
-    for (let i = 0; i < document.querySelectorAll('.card-recipe').length; i += 1) {
-      displayedRecipesId.push(document.querySelectorAll('.card-recipe')[i].dataset.id);
-      filteredDropdownMainSearch();
-    }
+    mainSearchDisplay();
   } else if (e.target.value.length < 3 && tagValuesArr.length === 0) {
     newRecipes = [...recipes];
     recipesDisplay(newRecipes);
@@ -391,9 +415,9 @@ searchInput.addEventListener('input', (e) => {
     displayDropdownElements();
     dropdownResultDisplay();
   } else if (e.target.value.length < 3 && tagValuesArr.length > 0) {
-    recipesDisplay(newRecipes);
-    dropdownListDisplay(newRecipes);
-    displayDropdownElements();
-    dropdownResultDisplay();
+    newRecipes = [...recipes];
+    searchFilter();
   }
-}); */
+  inputValueLength = [];
+  inputValueLength.push(e.target.value.length);
+});
