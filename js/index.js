@@ -157,7 +157,7 @@ const dropdownResultDisplay = () => {
         <p>${listContent}</p>
         <button class="remove-result"><i class="far fa-times-circle"></i></button>
       `;
-      // Supprimer le filtre
+      // Supprimer le tag
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
         filterResultsDiv.remove();
         searchFilter(true);
@@ -166,6 +166,12 @@ const dropdownResultDisplay = () => {
         }
       });
       searchFilter();
+      if (ingredientSearch.value.length || applianceSearch.value.length
+        || utensilSearch.value.length > 0) {
+        ingredientSearch.value = '';
+        applianceSearch.value = '';
+        utensilSearch.value = '';
+      }
     });
   });
 };
@@ -281,6 +287,28 @@ const noResultDisplay = (arr) => {
   }
 };
 
+const mainSearchFilter = (recipesToFilter) => {
+  const searchedstr = normalize(searchInput.value).toUpperCase();
+  const newRecipesToFilter = [...recipesToFilter];
+  const filteredRecipes = [];
+  for (let i = 0; i < newRecipesToFilter.length; i += 1) {
+    if (normalize(newRecipesToFilter[i].name.toUpperCase()).includes(searchedstr)) {
+      filteredRecipes.push(newRecipesToFilter[i]);
+    }
+    if (normalize(newRecipesToFilter[i].description.toUpperCase()).includes(searchedstr)) {
+      filteredRecipes.push(newRecipesToFilter[i]);
+    }
+    for (let j = 0; j < newRecipesToFilter[i].ingredients.length; j += 1) {
+      if (normalize(newRecipesToFilter[i].ingredients[j].ingredient.toUpperCase())
+        .includes(searchedstr)) {
+        filteredRecipes.push(newRecipesToFilter[i]);
+      }
+    }
+  }
+  const UniqueFilteredRecipes = [...new Set(filteredRecipes)];
+  return UniqueFilteredRecipes;
+};
+
 const mainSearchDisplay = (remove = false) => {
   let filteredRecipes = [...newRecipes];
   if (remove) {
@@ -291,21 +319,10 @@ const mainSearchDisplay = (remove = false) => {
   recipesDisplay(filteredRecipes);
   noResultDisplay(filteredRecipes);
   newRecipes = filteredRecipes;
-  document.querySelectorAll('.card-recipe').forEach((card) => {
-    displayedRecipesId.push(card.dataset.id);
+  for (let i = 0; i < document.querySelectorAll('.card-recipe').length; i += 1) {
+    displayedRecipesId.push(document.querySelectorAll('.card-recipe')[i].dataset.id);
     filteredDropdownMainSearch();
-  });
-};
-
-const mainSearchFilter = (recipesToFilter) => {
-  const searchedstr = normalize(searchInput.value).toUpperCase();
-  const filtered = [...recipesToFilter]
-    .filter((recipe) => normalize(recipe.name.toUpperCase())
-      .includes(searchedstr)
-|| normalize(recipe.description.toUpperCase()).includes(searchedstr)
-|| recipe.ingredients.some((elt) => normalize(elt.ingredient.toUpperCase())
-  .includes(searchedstr)));
-  return filtered;
+  }
 };
 
 searchInput.addEventListener('input', (e) => {
