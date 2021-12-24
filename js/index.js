@@ -287,26 +287,28 @@ const noResultDisplay = (arr) => {
   }
 };
 
+const hasIngredient = (recipe, searchedstr) => {
+  for (let j = 0; j < recipe.ingredients.length; j += 1) {
+    if (normalize(recipe.ingredients[j].ingredient.toUpperCase())
+      .includes(searchedstr)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 const mainSearchFilter = (recipesToFilter) => {
   const searchedstr = normalize(searchInput.value).toUpperCase();
   const newRecipesToFilter = [...recipesToFilter];
   const filteredRecipes = [];
   for (let i = 0; i < newRecipesToFilter.length; i += 1) {
-    if (normalize(newRecipesToFilter[i].name.toUpperCase()).includes(searchedstr)) {
+    if (normalize(newRecipesToFilter[i].name.toUpperCase()).includes(searchedstr)
+    || normalize(newRecipesToFilter[i].description.toUpperCase()).includes(searchedstr)
+    || hasIngredient(newRecipesToFilter[i], searchedstr)) {
       filteredRecipes.push(newRecipesToFilter[i]);
-    }
-    if (normalize(newRecipesToFilter[i].description.toUpperCase()).includes(searchedstr)) {
-      filteredRecipes.push(newRecipesToFilter[i]);
-    }
-    for (let j = 0; j < newRecipesToFilter[i].ingredients.length; j += 1) {
-      if (normalize(newRecipesToFilter[i].ingredients[j].ingredient.toUpperCase())
-        .includes(searchedstr)) {
-        filteredRecipes.push(newRecipesToFilter[i]);
-      }
     }
   }
-  const UniqueFilteredRecipes = [...new Set(filteredRecipes)];
-  return UniqueFilteredRecipes;
+  return filteredRecipes;
 };
 
 const mainSearchDisplay = (remove = false) => {
