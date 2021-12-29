@@ -129,9 +129,12 @@ dropdowns.forEach((dropdown) => {
       const toggle = toggleList;
       const toggleData = toggle.dataset.type;
       const selectedToggle = toggleData.includes(e.target.dataset.type);
+      // On affiche la liste correpondante au bon dropdown en fonction de son attribut
       if (selectedToggle) {
+        // On ferme le dropdown déjà ouvert (le cas échéant)
         closeDropdown();
         toggle.classList.add('active');
+        // On applique le bon margin sur les dropdowns
       } else if (ingredientToggle.classList.contains('active')) {
         applianceBtn.classList.add('margin-appliance');
       } else if (applianceToggle.classList.contains('active')) {
@@ -145,6 +148,7 @@ dropdowns.forEach((dropdown) => {
 const dropdownResultDisplay = () => {
   const dropdownElements = document.querySelectorAll('.option');
   dropdownElements.forEach((element) => {
+    // Quand on clique sur l'élément on crée un tag
     element.addEventListener('click', (e) => {
       closeDropdown();
       const filterResultsDiv = document.createElement('div');
@@ -161,11 +165,14 @@ const dropdownResultDisplay = () => {
       filterResultsDiv.querySelector('.remove-result').addEventListener('click', () => {
         filterResultsDiv.remove();
         searchFilter(true);
+        // Si valeur dans l'input de recherche, on lance la recherche principale
         if (searchInput.value.length > 2) {
           mainSearchDisplay();
         }
       });
+      // On filtre les recettes en fonction des tags
       searchFilter();
+      // On vide la valeur de l'input de reherche du dropdown
       if (ingredientSearch.value.length || applianceSearch.value.length
         || utensilSearch.value.length > 0) {
         ingredientSearch.value = '';
@@ -181,12 +188,14 @@ dropdownResultDisplay();
 const searchDropdown = (searchedString, container, arr, type) => {
   // eslint-disable-next-line no-param-reassign
   container.innerHTML = '';
+  // On filtre en fonction du mot tapé
   arr.forEach((word) => {
     if (word.toUpperCase().indexOf(searchedString.toUpperCase()) !== -1) {
       // eslint-disable-next-line no-param-reassign
       container.innerHTML += `<li class="option" data-type="${type}">${word}</li>`;
     }
   });
+  // On affiche une message d'erreur si pas de résultat
   if (container.innerHTML === '') {
     // eslint-disable-next-line no-param-reassign
     container.innerHTML = '<p>Aucun résultat</p>';
@@ -216,19 +225,25 @@ const displayFilteredList = () => {
   ingredientList = [];
   applianceList = [];
   utensilList = [];
+  // On récupère la valeur des tags
   document.querySelectorAll('.element-result p').forEach((tag) => {
     const tagValues = tag.textContent;
     tagValuesArr.push(tagValues);
   });
+  // On récupère les id des recettes affichées
   const integerId = displayedRecipesId.map((el) => parseInt(el, 10));
+  // On filtre les recettes en fonction des id
   const filteredRecipesId = recipes.filter((v) => integerId.includes(v.id));
+  // On filtre les éléments en fonction des recettes filtrées
   createDropdownElt(filteredRecipesId);
+  // On retire les éléments déjà présents dans les tags sélectionnés
   const filteredIngredientList = ingredientList.filter((v) => !tagValuesArr.includes(v));
   ingredientList = filteredIngredientList;
   const filteredApplianceList = applianceList.filter((v) => !tagValuesArr.includes(v));
   applianceList = filteredApplianceList;
   const filteredUtensilist = utensilList.filter((v) => !tagValuesArr.includes(v));
   utensilList = filteredUtensilist;
+  // On affiche les éléments et on crée les tags si on clique dessus
   displayDropdownElements();
   dropdownResultDisplay();
 };
@@ -236,8 +251,10 @@ const displayFilteredList = () => {
 // Filtrer les recettes en fonctions des tags sélectionnés
 const filterRecipesByTags = (recipesToFilter) => {
   let filtered = [...recipesToFilter];
+  // On récupère la valeur des tags
   document.querySelectorAll('.element-result p').forEach((tag) => {
     const tagValue = tag.textContent.toUpperCase();
+    // On filtre les recettes en fonction de la valeur des tags
     filtered = [...filtered.filter((recipe) => (
       recipe.ingredients.some((elt) => tagValue === normalize(elt.ingredient.toUpperCase()))
       || tagValue === normalize(recipe.appliance.toUpperCase())
@@ -250,28 +267,38 @@ const filterRecipesByTags = (recipesToFilter) => {
 
 // Afficher les recettes filtrées
 const searchFilter = (remove = false) => {
+  // Si on supprime un tag, on filtre à partir de toutes les recettes
   if (remove) {
     newRecipes = [...recipes];
   }
   displayedRecipesId = [];
+  // On fait une copie des recettes qui peuvent déjà être filtrés par un tag ou recherche principale
   let filteredRecipes = [...newRecipes];
   filteredRecipes = [...filterRecipesByTags(filteredRecipes)];
+  // On affiche les recettes filtrées
   recipesDisplay(filteredRecipes);
+  // On actualise les recettes filtrées
   newRecipes = filteredRecipes;
+  // On récupère les id des recettes pour afficher le contenu actualisé dans les dropdowns
   document.querySelectorAll('.card-recipe').forEach((card) => {
     displayedRecipesId.push(card.dataset.id);
     displayFilteredList();
   });
 };
 
-// Filtrer la liste des dropdowns en fonction des recettes recherchées
+// Recherche principale
+
+// Filtrer la liste des dropdowns en fonction des recettes affichées pour la recherche principale
 const filteredDropdownMainSearch = () => {
   ingredientList = [];
   applianceList = [];
   utensilList = [];
+  // On filtre les recettes en fonction des id
   const integerId = displayedRecipesId.map((el) => parseInt(el, 10));
   const filteredRecipesId = recipes.filter((v) => integerId.includes(v.id));
+  // On filtre les éléments en fonction des recettes filtrées
   createDropdownElt(filteredRecipesId);
+  // On affiche les éléments et on crée les tags si on clique dessus
   displayDropdownElements();
   dropdownResultDisplay();
 };
@@ -287,6 +314,7 @@ const noResultDisplay = (arr) => {
   }
 };
 
+// On vérifie si la valeur est un ingrédient et on filtre
 const hasIngredient = (recipe, searchedstr) => {
   for (let j = 0; j < recipe.ingredients.length; j += 1) {
     if (normalize(recipe.ingredients[j].ingredient.toUpperCase())
@@ -297,6 +325,7 @@ const hasIngredient = (recipe, searchedstr) => {
   return false;
 };
 
+// On filtre les recettes en fonction de la valeur de l'input
 const mainSearchFilter = (recipesToFilter) => {
   const searchedstr = normalize(searchInput.value).toUpperCase();
   const newRecipesToFilter = [...recipesToFilter];
@@ -312,15 +341,21 @@ const mainSearchFilter = (recipesToFilter) => {
 };
 
 const mainSearchDisplay = (remove = false) => {
+  // On fait une copie des recettes qui peuvent déjà être filtrées par une recherche précédente
   let filteredRecipes = [...newRecipes];
+  // Si on efface la valeur, on filtre à partir de toutes les recettes
   if (remove) {
     newRecipes = [...recipes];
     filteredRecipes = newRecipes;
   }
+  // On filtre les recettes en fonction de la valeur et des recettes déjà filtrées
   filteredRecipes = [...mainSearchFilter(filteredRecipes)];
+  // On affiche les recettes ou le message d'erreur, le cas échéant
   recipesDisplay(filteredRecipes);
   noResultDisplay(filteredRecipes);
+  // On actualise les recettes filtrées
   newRecipes = filteredRecipes;
+  // On récupère les id des recettes pour afficher le contenu actualisé dans les dropdowns
   for (let i = 0; i < document.querySelectorAll('.card-recipe').length; i += 1) {
     displayedRecipesId.push(document.querySelectorAll('.card-recipe')[i].dataset.id);
     filteredDropdownMainSearch();
@@ -330,20 +365,24 @@ const mainSearchDisplay = (remove = false) => {
 searchInput.addEventListener('input', (e) => {
   displayedRecipesId = [];
   if (e.target.value.length >= 3) {
+    // On vérifie si l'utilisateur retire du texte
     if (e.target.value.length < Number(inputValueLength.join(''))) {
+      mainSearchDisplay(true);
+      // On vérifie s'il y a des tags sélectionnés et on filtre en fonction des tags
       if (tagValuesArr.length > 0) {
-        mainSearchDisplay(true);
         searchFilter();
-      } else {
-        mainSearchDisplay(true);
       }
     }
     mainSearchDisplay();
   } else if (e.target.value.length < 3 && tagValuesArr.length === 0) {
     newRecipes = [...recipes];
+    // On affiche toutes les recettes
     recipesDisplay(newRecipes);
+    // On crée les éléments du dropdown à partir de toutes les recettes
     createDropdownElt(newRecipes);
+    // On affiche les éléments du dropdown
     displayDropdownElements();
+    // On crée un tag si on clique sur un élement du dropdown
     dropdownResultDisplay();
   } else if (e.target.value.length < 3 && tagValuesArr.length > 0) {
     newRecipes = [...recipes];
