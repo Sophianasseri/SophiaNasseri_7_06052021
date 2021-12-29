@@ -314,32 +314,6 @@ const noResultDisplay = (arr) => {
   }
 };
 
-// On vérifie si la valeur est un ingrédient et on filtre
-const hasIngredient = (recipe, searchedstr) => {
-  for (let j = 0; j < recipe.ingredients.length; j += 1) {
-    if (normalize(recipe.ingredients[j].ingredient.toUpperCase())
-      .includes(searchedstr)) {
-      return true;
-    }
-  }
-  return false;
-};
-
-// On filtre les recettes en fonction de la valeur de l'input
-const mainSearchFilter = (recipesToFilter) => {
-  const searchedstr = normalize(searchInput.value).toUpperCase();
-  const newRecipesToFilter = [...recipesToFilter];
-  const filteredRecipes = [];
-  for (let i = 0; i < newRecipesToFilter.length; i += 1) {
-    if (normalize(newRecipesToFilter[i].name.toUpperCase()).includes(searchedstr)
-    || normalize(newRecipesToFilter[i].description.toUpperCase()).includes(searchedstr)
-    || hasIngredient(newRecipesToFilter[i], searchedstr)) {
-      filteredRecipes.push(newRecipesToFilter[i]);
-    }
-  }
-  return filteredRecipes;
-};
-
 const mainSearchDisplay = (remove = false) => {
   // On fait une copie des recettes qui peuvent déjà être filtrées par une recherche précédente
   let filteredRecipes = [...newRecipes];
@@ -356,10 +330,22 @@ const mainSearchDisplay = (remove = false) => {
   // On actualise les recettes filtrées
   newRecipes = filteredRecipes;
   // On récupère les id des recettes pour afficher le contenu actualisé dans les dropdowns
-  for (let i = 0; i < document.querySelectorAll('.card-recipe').length; i += 1) {
-    displayedRecipesId.push(document.querySelectorAll('.card-recipe')[i].dataset.id);
+  document.querySelectorAll('.card-recipe').forEach((card) => {
+    displayedRecipesId.push(card.dataset.id);
     filteredDropdownMainSearch();
-  }
+  });
+};
+
+// On filtre les recettes en fonction de la valeur de l'input
+const mainSearchFilter = (recipesToFilter) => {
+  const searchedstr = normalize(searchInput.value).toUpperCase();
+  const filtered = [...recipesToFilter]
+    .filter((recipe) => normalize(recipe.name.toUpperCase())
+      .includes(searchedstr)
+|| normalize(recipe.description.toUpperCase()).includes(searchedstr)
+|| recipe.ingredients.some((elt) => normalize(elt.ingredient.toUpperCase())
+  .includes(searchedstr)));
+  return filtered;
 };
 
 searchInput.addEventListener('input', (e) => {
